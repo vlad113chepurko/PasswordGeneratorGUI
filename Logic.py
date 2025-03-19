@@ -58,6 +58,11 @@ while True:
     generator = PasswordGeberator(get_values[0], get_values[1], get_values[2])
     password = generator.generate_password()
 
+    f = open("password.txt", "a")
+    f.write(password)
+    f.close()
+    print(f.readline())
+
     
     print(f"Password: {password}")
 
