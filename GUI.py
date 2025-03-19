@@ -9,36 +9,55 @@ root.geometry("400x400")
 root.title("Password Generator")
 root.config(bg="#3d3d3d")
 
-
-  
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((PATH, PORT))
 
 def get_values():
-    
-    # Append Values in VALUES:
-
+  
     if not client:
-        print("Client is not!")
+        print("Client is not connected!")
+        return
 
     VALUES = []
 
     length = length_entry.get()
-    VALUES.append(length)
-    letters = letters_entry.get()
-    VALUES.append(letters)
-    numbers = numbers_entry.get()
-    VALUES.append(numbers)
+    text = text_entry.get()
     chars = chars_entry.get()
-    VALUES.append(chars)
 
     try:
+        length = int(length)
+        if length > 10:
+            VALUES.append(length)
+        else:
+            print("Length must be more than 10!")
+            return
+    except ValueError:
+        print("Invalid!")
+        return
+
+    
+    if len(text) > 1:
+        VALUES.append(text.lower())
+    else:
+        print("Text must be more than 1 character!")
+        return
+
+    
+    if len(chars) > 1:
+        VALUES.append(chars)
+    else:
+        print("Chars must be more than 1 character!")
+        return
+
+    try:
+       
         client.send(str(VALUES).encode())
-        print(f"Sends: {VALUES}")
+        print(f"Sent: {VALUES}")
+
     except Exception as e:
         print(f"Error: {e}")
-    
-    
+
+
 # Entry and Labels:
 
 length_label = Label(text="Enter length: ", font="Arial", background="#3d3d3d", fg="white")
@@ -47,28 +66,23 @@ length_label.grid(column=0, row=0, pady=10)
 length_entry = Entry()
 length_entry.grid(column=1, row=0, pady=10)
 
-letters_label = Label(text="Enter letters: ", font="Arial", background="#3d3d3d", fg="white")
-letters_label.grid(column=0, row=2, pady=10)
+text_label = Label(text="Enter text: ", font="Arial", background="#3d3d3d", fg="white")
+text_label.grid(column=0, row=2, pady=10)
 
-letters_entry = Entry()
-letters_entry.grid(column=1, row=2, pady=10)
-
-numbers_label = Label(text="Enter numbers: ", font="Arial", background="#3d3d3d", fg="white")
-numbers_label.grid(column=0, row=3, pady=10)
-
-numbers_entry = Entry()
-numbers_entry.grid(column=1, row=3, pady=10)
+text_entry = Entry()
+text_entry.grid(column=1, row=2, pady=10)
 
 chars_label = Label(text="Enter chars: ", font="Arial", background="#3d3d3d", fg="white")
-chars_label.grid(column=0, row=4, pady=10)
+chars_label.grid(column=0, row=3, pady=10)
 
 chars_entry = Entry()
-chars_entry.grid(column=1, row=4, pady=10)
+chars_entry.grid(column=1, row=3, pady=10)
 
 # Else:
 
 submit = Button(text="Generate Password", command=get_values)
-submit.grid(column=1, row=5, pady=10)
+submit.grid(column=1, row=4, pady=10)
 
 root.mainloop()
+
 client.close()

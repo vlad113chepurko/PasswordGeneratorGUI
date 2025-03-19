@@ -1,4 +1,5 @@
 import socket
+import random
 
 PATH = '127.0.0.1'
 PORT = 12345
@@ -14,22 +15,52 @@ print(f"Connect with: {addr}")
 
 
 
-# class PasswordGeberator(object):
-#   def __init__(self, length, letters, numbers, chars):
-#     self.length = length
-#     self.letters = letters
-#     self.numbers = numbers
-#     self.chars = chars
+class PasswordGeberator(object):
+  def __init__(self, length, text, chars):
+    self.length = int(length)
+    self.text = text
+    self.chars = chars
 
-#   # def generate_password(self, password):
+  def generate_password(self):
+        available_chars = ''
+
+        if self.text and len(self.text) <= self.length:
+            available_chars += self.text
+
+        if self.chars and len(self.chars) <= self.length:
+            available_chars += self.chars
+
+        if available_chars:
+            password = ''.join(random.choices(available_chars, k=self.length))
+            return password
+        else:
+            return "Error: No characters to generate password!"
+  
+
+
 
 while True:
+
   try:
+
     data = conn.recv(1024)
+
     if not data:
       print("Server closing...")
+      break
+
     decoding = data.decode()
-    print(f"Decod: {decoding}")
+
+    get_values = eval(decoding)
+
+    print(f"Values on server: {get_values}")
+
+    generator = PasswordGeberator(get_values[0], get_values[1], get_values[2])
+    password = generator.generate_password()
+
+    
+    print(f"Password: {password}")
+
   except Exception as e:
     print(f"Error: {e}")
 
